@@ -85,8 +85,6 @@
 %% '''
 -module(sregulator).
 
--include("sbroker_stacktrace.hrl").
-
 %% public api
 
 -export([ask/1]).
@@ -611,8 +609,8 @@ init_it(Starter, Parent, Name, Mod, Args, Opts) ->
             Reason = {bad_return_value, Other},
             init_stop(Starter, Name, Reason)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Stack = ?GET_STACKTRACE(Stacktrace),
+        Class:Reason:Stacktrace ->
+            Stack = erlang:get_stacktrace(Stacktrace),
             Reason2 = sbroker_handlers:exit_reason({Class, Reason, Stack}),
             init_stop(Starter, Name, Reason2)
     end.
@@ -776,8 +774,8 @@ update_meter(Now, open, #time{send=Send} = Time, Q, V,
         Other ->
             valve_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 update_meter(Now, closed, #time{send=Send, empty=Empty} = Time, Q, V,
              #config{queue_mod=QMod} = Config) ->
@@ -793,8 +791,8 @@ update_meter(Now, closed, #time{send=Send, empty=Empty} = Time, Q, V,
         Other ->
             queue_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 update_meter(Now, State, RelativeTime, Empty,
@@ -866,8 +864,8 @@ open({Label, Ask, Pid}, #time{now=Now, send=Send} = Time, Q, V, _,
         Other ->
             valve_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 open({continue, From, Ref}, #time{now=Now, send=Send} = Time, Q, V, _,
      #config{valve_mod=VMod} = Config) ->
@@ -884,8 +882,8 @@ open({continue, From, Ref}, #time{now=Now, send=Send} = Time, Q, V, _,
         Other ->
             valve_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 open({cancel, From, _}, Time, Q, V, _, Config) ->
     cancelled(From, false),
@@ -908,8 +906,8 @@ closed({ask, Ask, Pid}, #time{now=Now, send=Send} = Time, Q, V, _,
         Other ->
             queue_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 closed({nb_ask, Ask, _}, #time{now=Now, send=Send} = Time, Q, V, _,
        Config) ->
@@ -933,8 +931,8 @@ closed({continue, From, Ref}, #time{send=Send, now=Now} = Time, Q, V, _,
         Other ->
             valve_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 closed({cancel, From, Tag}, #time{now=Now} = Time, Q, V, _,
        #config{queue_mod=QMod} = Config) ->
@@ -945,8 +943,8 @@ closed({cancel, From, Tag}, #time{now=Now} = Time, Q, V, _,
         Other ->
             queue_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 closed(Msg, Time, Q, V, Next, Config) ->
     common(Msg, closed, Time, Q, V, Next, Config).
@@ -960,8 +958,8 @@ common({update, From, Value}, State, #time{send=Send} = Time, Q, V, _,
         Other ->
             valve_return(Other, State, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, State, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, State, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 common({done, From, Ref}, State, #time{send=Send, now=Now} = Time, Q, V, _,
        #config{valve_mod=VMod} = Config) ->
@@ -975,8 +973,8 @@ common({done, From, Ref}, State, #time{send=Send, now=Now} = Time, Q, V, _,
         Other ->
             valve_return(Other, State, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, State, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, State, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 common({'$mark', Mark}, State, #time{now=Now} = Time, Q, V, Next, Config) ->
     receive
@@ -1002,8 +1000,8 @@ common({len, From, _}, State, Time, Q, V, _,
             gen:reply(From, Len),
             timeout(State, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, State, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, State, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 common({size, From, _}, State, Time, Q, V, _,
        #config{valve_mod=VMod} = Config) ->
@@ -1012,8 +1010,8 @@ common({size, From, _}, State, Time, Q, V, _,
             gen:reply(From, Size),
             timeout(State, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, State, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, State, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end;
 common({_, From, get_modules}, State, #time{meters=Meters} = Time, Q, V,
        _, #config{mod=Mod, queue_mod=QMod, valve_mod=VMod} = Config) ->
@@ -1063,7 +1061,7 @@ format_status(Mod, Opt, PDict, State) ->
                 Status ->
                     Status
             catch
-                ?CLASS_REASON_STACKTRACE(_, _, _) ->
+                _:_:_ ->
                     State
             end;
         false ->
@@ -1107,8 +1105,8 @@ config_change(#config{mod=Mod, args=Args}) ->
         Other ->
             {error, {bad_return_value, Other}}
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            {error, {Class, Reason, ?GET_STACKTRACE(Stacktrace)}}
+        Class:Reason:Stacktrace ->
+            {error, {Class, Reason, erlang:get_stacktrace(Stacktrace)}}
     end.
 
 config_meters(QMod, QArgs, VMod, VArgs, MeterArgs) ->
@@ -1171,8 +1169,8 @@ opening_out(#time{now=Now, send=Send} = Time, Q, V, VNext,
         Other ->
             queue_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 opening_ask(AskSend, Ask, Pid, Ref, #time{now=Now, send=Send} = Time, Q, V,
@@ -1188,8 +1186,8 @@ opening_ask(AskSend, Ask, Pid, Ref, #time{now=Now, send=Send} = Time, Q, V,
         Other ->
             valve_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 info_queue(Msg, State, #time{now=Now} = Time, Q, V,
@@ -1200,8 +1198,8 @@ info_queue(Msg, State, #time{now=Now} = Time, Q, V,
         Other ->
             queue_return(Other, State, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, State, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, State, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 info_valve(Msg, State, #time{send=Send} = Time, Q, V, QNext,
@@ -1213,8 +1211,8 @@ info_valve(Msg, State, #time{send=Send} = Time, Q, V, QNext,
         Other ->
             valve_return(Other, State, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, State, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, State, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 info_meter(_, State, NState, #time{meters=[]} = Time, Q, V, Next, Config) ->
@@ -1252,8 +1250,8 @@ open_timeout(#time{send=Send} = Time, Q, V, #config{valve_mod=VMod} = Config) ->
         Other ->
             valve_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 closed_timeout(#time{send=Send} = Time, Q, V,
@@ -1266,8 +1264,8 @@ closed_timeout(#time{send=Send} = Time, Q, V,
         Other ->
             valve_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 valve_timeout(#time{send=Send} = Time, Q, V, QNext,
@@ -1282,8 +1280,8 @@ valve_timeout(#time{send=Send} = Time, Q, V, QNext,
         Other ->
             valve_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 queue_timeout(#time{now=Now} = Time, Q, V, VNext,
@@ -1294,8 +1292,8 @@ queue_timeout(#time{now=Now} = Time, Q, V, VNext,
         Other ->
             queue_return(Other, closed, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            queue_exception(Class, Reason, closed, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            queue_exception(Class, Reason, closed, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 timeout(open, open, Time, Q, V, Config) ->
@@ -1317,8 +1315,8 @@ opening_timeout(#time{send=Send} = Time, Q, V,
         Other ->
             valve_return(Other, open, Time, Q, V, Config)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            valve_exception(Class, Reason, open, Time, Q, V, Config, ?GET_STACKTRACE(Stacktrace))
+        Class:Reason:Stacktrace ->
+            valve_exception(Class, Reason, open, Time, Q, V, Config, erlang:get_stacktrace(Stacktrace))
     end.
 
 queue_return(Return, State, Time, Q, V,

@@ -1,7 +1,0 @@
--ifdef(OTP_RELEASE).
--define(CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace), Class:Reason:Stacktrace).
--define(GET_STACKTRACE(Stacktrace), Stacktrace).
--else.
--define(CLASS_REASON_STACKTRACE(Class, Reason, _), Class:Reason).
--define(GET_STACKTRACE(_), erlang:get_stacktrace()).
--endif.
