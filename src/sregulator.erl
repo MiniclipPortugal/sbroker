@@ -760,7 +760,7 @@ mark(Time) ->
 update_time(State, #time{seq=Seq, read_after=Seq} = Time, Q, V, Config) ->
     Now = erlang:monotonic_time(),
     update_meter(Now, State, Time, Q, V, Config);
-update_time(_, #time{seq=Seq} = Time, _, _, __) ->
+update_time(_, #time{seq=Seq} = Time, _, _, _) ->
     Time#time{seq=Seq+1}.
 
 update_meter(Now, _, #time{meters=[]} = Time, _, _, _) ->

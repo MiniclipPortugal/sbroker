@@ -198,7 +198,7 @@ handle_update_args(#state{mod=Mod, time=Time, meter=M}) ->
                                                      native),
              NRelTime = erlang:convert_time_unit(RelTime, milli_seconds,
                                                  native),
-             [Mod, choose(0,5), NQueueTime, NProcessTime, NRelTime, time(Time),
+             [Mod, choose(0, 5), NQueueTime, NProcessTime, NRelTime, time(Time),
               M]
          end).
 

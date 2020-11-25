@@ -58,8 +58,8 @@
 
 -type stacktrace() ::
     [{module(), atom(), arity() | [term()]} | {function(), [term()]}] |
-    [{module(), atom(), arity() | [term()], [{atom(),term()}]} |
-     {function(), [term()], [{atom(),term()}]}].
+    [{module(), atom(), arity() | [term()], [{atom(), term()}]} |
+     {function(), [term()], [{atom(), term()}]}].
 
 -spec init(Send, Time, Inits, MeterArgs, Name) ->
     {ok, Callbacks, {Meters, TimeoutTime}} | {stop, ExitReason} when
