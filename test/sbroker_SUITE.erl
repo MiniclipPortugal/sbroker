@@ -204,7 +204,7 @@ skip_down_match(_) ->
             Self = self(),
             {await, Ref, _} = sbroker:async_ask_r(Broker, Self, {Self, Ref}),
             sys:resume(Broker),
-            {drop, _} = sbroker:await(Ref, ?TIMEOUT),
+            _ = sbroker:await(Ref, ?TIMEOUT),
             ok
     end.
 
