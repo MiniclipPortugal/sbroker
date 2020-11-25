@@ -1,6 +1,12 @@
 sbroker
 =======
 
+![CI for sbroker](https://github.com/miniclip/sbroker/workflows/CI%20for%20sbroker/badge.svg)
+[![erlang][erlang badge]][erlang downloads]
+
+[erlang badge]: https://img.shields.io/badge/erlang-%3E%3D19.3-lightgrey
+[erlang downloads]: http://www.erlang.org/download
+
 `sbroker` is a library that provides the building blocks for creating a pool
 and/or a load regulator. The main goals of the library are to minimise upper
 percentile latency by smart queuing, easily change the feature set live with
