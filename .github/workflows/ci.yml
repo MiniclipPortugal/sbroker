@@ -1,6 +1,9 @@
 ---
 name: CI for sbroker
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches:
       - master
