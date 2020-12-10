@@ -1,5 +1,5 @@
 ---
-name: CI for sbroker
+name: build
 on:
   push:
     branches:

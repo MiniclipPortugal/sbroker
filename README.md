@@ -1,7 +1,7 @@
 sbroker
 =======
 
-![CI for sbroker](https://github.com/miniclip/sbroker/workflows/CI%20for%20sbroker/badge.svg)
+![build](https://github.com/miniclip/sbroker/workflows/build/badge.svg)
 [![erlang][erlang badge]][erlang downloads]
 
 [erlang badge]: https://img.shields.io/badge/erlang-%3E%3D19.3-lightgrey
