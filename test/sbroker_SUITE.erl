@@ -191,6 +191,10 @@ await_down(_) ->
        [Ref, ?TIMEOUT]}}} = (catch sbroker:await(Ref, ?TIMEOUT)),
     ok.
 
+-ifdef(SKIP_BROKEN_TEST_CASES).
+skip_down_match(_) ->
+    {skip, "Broken test case"}.
+-else.
 skip_down_match(_) ->
     {ok, Broker} = sbroker_test:start_link(),
     ok = sys:suspend(Broker),
@@ -204,9 +208,10 @@ skip_down_match(_) ->
             Self = self(),
             {await, Ref, _} = sbroker:async_ask_r(Broker, Self, {Self, Ref}),
             sys:resume(Broker),
-            _ = sbroker:await(Ref, ?TIMEOUT),
+            {drop, _} = sbroker:await(Ref, ?TIMEOUT),
             ok
     end.
+-endif.
 
 user(_) ->
     Name = {local, ?MODULE},
