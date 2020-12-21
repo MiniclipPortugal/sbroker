@@ -72,7 +72,7 @@ handle(Time, State) ->
     handle(State#state{now=Time}).
 
 config_change(#{target := Target, interval := Interval, min := Min, max := Max},
-              _, Time,#state{first_above_time=FirstAbove,
+              _, Time, #state{first_above_time=FirstAbove,
                              open_next=OpenNext} = State) ->
     NTarget = erlang:convert_time_unit(Target, milli_seconds, native),
     NInterval = erlang:convert_time_unit(Interval, milli_seconds, native),

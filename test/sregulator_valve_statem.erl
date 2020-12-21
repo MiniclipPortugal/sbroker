@@ -316,7 +316,7 @@ handle_done_args(#state{mod=Mod, list=[], done=[], shutdown=[],
 handle_done_args(#state{mod=Mod, list=L, done=Done, shutdown=Shutdown,
                         time=Time, valve=V}) ->
     frequency([{1, [Mod, undefined, time(Time), V]},
-               {16, [Mod, elements(L++Done++Shutdown), time(Time), V]}]).
+               {16, [Mod, elements(L ++ Done ++ Shutdown), time(Time), V]}]).
 
 handle_done_pre(#state{time=PrevTime}, [_, undefined, Time, _]) ->
     Time >= PrevTime;

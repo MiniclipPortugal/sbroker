@@ -1,6 +1,12 @@
 sbroker
 =======
 
+![build](https://github.com/miniclip/sbroker/workflows/build/badge.svg)
+[![erlang][erlang badge]][erlang downloads]
+
+[erlang badge]: https://img.shields.io/badge/erlang-%3E%3D19.3-lightgrey
+[erlang downloads]: http://www.erlang.org/download
+
 `sbroker` is a library that provides the building blocks for creating a pool
 and/or a load regulator. The main goals of the library are to minimise upper
 percentile latency by smart queuing, easily change the feature set live with
@@ -57,15 +63,15 @@ directly supported.
 Testing
 -------
 
-```
+```bash
 $ rebar3 ct
+...
 ```
 
 Documentation
 -------------
 
-Documentation is hosted on hex: http://hexdocs.pm/sbroker/
-
+Documentation is hosted on hex: [http://hexdocs.pm/sbroker/](http://hexdocs.pm/sbroker/).
 
 Motivation
 ----------
@@ -151,7 +157,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,

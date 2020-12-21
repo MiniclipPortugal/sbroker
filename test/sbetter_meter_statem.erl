@@ -39,7 +39,7 @@ module() ->
 
 args() ->
     ?LET({AskUpper, AskRUpper, Update},
-         {choose(0, 5), choose(0,5), choose(1,5)},
+         {choose(0, 5), choose(0, 5), choose(1, 5)},
          #{ask    => #{upper => AskUpper},
            ask_r  => #{upper => AskRUpper},
            update => Update}).

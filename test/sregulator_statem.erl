@@ -435,7 +435,7 @@ cancel_next(#state{queue=Q, cancels=Cancels} =State, _, [_, Client]) ->
                                    cancels=Cancels++[Client]},
                        fun valve_next/1);
         false ->
-            queue_next(State,fun valve_next/1)
+            queue_next(State, fun valve_next/1)
     end.
 
 cancel_post(#state{queue=Q} = State, [_, Client], Result) ->

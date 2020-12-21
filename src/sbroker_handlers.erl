@@ -20,8 +20,6 @@
 %% @private
 -module(sbroker_handlers).
 
--include("sbroker_stacktrace.hrl").
-
 -callback initial_state() -> BehaviourState :: any().
 
 -callback init(Mod :: module(), BehaviourState :: any(), Send :: integer(),
@@ -60,8 +58,8 @@
 
 -type stacktrace() ::
     [{module(), atom(), arity() | [term()]} | {function(), [term()]}] |
-    [{module(), atom(), arity() | [term()], [{atom(),term()}]} |
-     {function(), [term()], [{atom(),term()}]}].
+    [{module(), atom(), arity() | [term()], [{atom(), term()}]} |
+     {function(), [term()], [{atom(), term()}]}].
 
 -spec init(Send, Time, Inits, MeterArgs, Name) ->
     {ok, Callbacks, {Meters, TimeoutTime}} | {stop, ExitReason} when
@@ -231,8 +229,8 @@ init(Send, Time, [{Behaviour, Mod, Args} | Inits], Meters, Name, Callbacks) ->
                           {Behaviour2, Mod2, State2, _} <- Callbacks],
             terminate(Reason, NCallbacks, Name)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Stack = ?GET_STACKTRACE(Stacktrace),
+        Class:Reason ->
+            Stack = erlang:get_stacktrace(),
             Reason2 = {Class, Reason, Stack},
             NCallbacks = [{Behaviour2, Mod2, stop, State2} ||
                           {Behaviour2, Mod2, State2, _} <- Callbacks],
@@ -261,8 +259,8 @@ meters_init(Time, [{Mod, Args} | Inits], Name, Meters, Next) ->
             report(sbroker_meter, start_error, Mod, Reason, Args, Name),
             {stop, Reason, meters_callbacks(Meters)}
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Reason2 = {Class, Reason, ?GET_STACKTRACE(Stacktrace)},
+        Class:Reason ->
+            Reason2 = {Class, Reason, erlang:get_stacktrace()},
             report(sbroker_meter, start_error, Mod, Reason2, Args, Name),
             {stop, Reason2, meters_callbacks(Meters)}
     end;
@@ -281,8 +279,8 @@ meters_info(Msg, Time, [{Mod, State} | Meters], Name, NMeters, Next) ->
             Reason = {bad_return_value, Other},
             meters_terminate(Reason, Mod, State, Meters, NMeters, Name)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Stack = ?GET_STACKTRACE(Stacktrace),
+        Class:Reason ->
+            Stack = erlang:get_stacktrace(),
             Reason2 = {Class, Reason, Stack},
             meters_terminate(Reason2, Mod, State, Meters, NMeters, Name)
     end.
@@ -301,8 +299,8 @@ meters_update(QDelay, PDelay, RTime, Time, [{Mod, State} | Meters], Name,
             Reason = {bad_return_value, Other},
             meters_terminate(Reason, Mod, State, Meters, NMeters, Name)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Stack = ?GET_STACKTRACE(Stacktrace),
+        Class:Reason ->
+            Stack = erlang:get_stacktrace(),
             Reason2 = {Class, Reason, Stack},
             meters_terminate(Reason2, Mod, State, Meters, NMeters, Name)
     end.
@@ -325,8 +323,8 @@ do_code_change(Send, Time, [{Behaviour, ChangeMod, State, _} | Callbacks],
             do_code_change(Send, Time, Callbacks, ChangeMod, OldVsn, Extra,
                            NCallbacks2)
     catch
-        ?CLASS_REASON_STACKTRACE(throw, Value, Stacktrace) ->
-            erlang:raise(error, {nocatch, Value}, ?GET_STACKTRACE(Stacktrace))
+        throw:Value ->
+            erlang:raise(error, {nocatch, Value}, erlang:get_stacktrace())
     end;
 do_code_change(Send, Time, [Callback | Callbacks], ChangeMod, OldVsn, Extra,
                NCallbacks) ->
@@ -359,8 +357,8 @@ change(Behaviour, Mod, State, Mod, Args, Send, Now, _) ->
             Reason = {bad_return_value, Other},
             {stop, Reason, [{Behaviour, Mod, Reason, State}]}
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Reason2 = {Class, Reason, ?GET_STACKTRACE(Stacktrace)},
+        Class:Reason ->
+            Reason2 = {Class, Reason, erlang:get_stacktrace()},
             {stop, Reason2, [{Behaviour, Mod, Reason2, State}]}
     end;
 change(Behaviour, Mod1, State1, Mod2, Args2, Send, Now, Name) ->
@@ -368,8 +366,8 @@ change(Behaviour, Mod1, State1, Mod2, Args2, Send, Now, Name) ->
         Result ->
             change_init(Behaviour, Result, Mod2, Args2, Send, Now, Name)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Reason2 = {Class, Reason, ?GET_STACKTRACE(Stacktrace)},
+        Class:Reason ->
+            Reason2 = {Class, Reason, erlang:get_stacktrace()},
             report(Behaviour, handler_crashed, Mod1, Reason2, State1, Name),
             {stop, Reason2, []}
     end.
@@ -383,8 +381,8 @@ change_init(Behaviour, Result, Mod, Args, Send, Now, Name) ->
             report(Behaviour, start_error, Mod, Reason, Args, Name),
             {stop, Reason, []}
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Reason2 = {Class, Reason, ?GET_STACKTRACE(Stacktrace)},
+        Class:Reason ->
+            Reason2 = {Class, Reason, erlang:get_stacktrace()},
             report(Behaviour, start_error, Mod, Reason2, Args, Name),
             {stop, Reason2, []}
     end.
@@ -428,8 +426,8 @@ meters_change_term([{Mod, State} | Meters], Name) ->
         _ ->
             meters_change_term(Meters, Name)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Reason2 = {Class, Reason, ?GET_STACKTRACE(Stacktrace)},
+        Class:Reason ->
+            Reason2 = {Class, Reason, erlang:get_stacktrace()},
             report(sbroker_meter, handler_crashed, Mod, Reason2, State, Name),
             {stop, Reason2, meters_callbacks(Meters)}
     end;
@@ -459,8 +457,8 @@ meters_change_config(Time, [{Mod, Args, State} | Changes], Meters, Next) ->
             NChanges2 = [{sbroker_meter, Mod, Reason, State} | NChanges],
             {stop, Reason, State, NChanges2 ++ Callbacks}
     catch
-        ?CLASS_REASON_STACKTRACE(Class, Reason, Stacktrace) ->
-            Reason2 = {Class, Reason, ?GET_STACKTRACE(Stacktrace)},
+        Class:Reason ->
+            Reason2 = {Class, Reason, erlang:get_stacktrace()},
             Callbacks = meters_callbacks(Meters),
             NChanges = meters_change_callbacks(Changes),
             NChanges2 = [{sbroker_meter, Mod, Reason2, State} | NChanges],
@@ -485,8 +483,8 @@ terminate(Reason, [{Behaviour, Mod, ModReason, State} | Rest], Name) ->
             maybe_report(Behaviour, Mod, ModReason, State, Name),
             terminate(Reason, Rest, Name)
     catch
-        ?CLASS_REASON_STACKTRACE(Class, NReason, Stacktrace) ->
-            NReason2 = {Class, NReason, ?GET_STACKTRACE(Stacktrace)},
+        Class:NReason ->
+            NReason2 = {Class, NReason, erlang:get_stacktrace()},
             report(Behaviour, handler_crashed, Mod, NReason2, State, Name),
             terminate(NReason2, Rest, Name)
     end.
@@ -546,7 +544,7 @@ format_state(Mod, State) ->
                 Status ->
                     Status
             catch
-                ?CLASS_REASON_STACKTRACE(_, _, _) ->
+                _:_ ->
                     State
             end;
         false ->
