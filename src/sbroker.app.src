@@ -1,12 +1,19 @@
-{application, sbroker,
- [{description, "Low level pooling library"},
-  {vsn, git},
-  {mod, {sbroker_app, []}},
-  {registered, []},
-  {applications,
-    [kernel,stdlib,sasl]},
-  {env,
-    [{brokers, []}, {regulators, []}]},
-  {modules, []},
-  {licenses, ["Apache v2.0"]}
- ]}.
+{application, sbroker, [
+    {description, "Low level pooling library"},
+    {vsn, git},
+    {registered, []},
+    {mod, {sbroker_app, []}},
+
+    {applications, [
+        % OTP dependencies
+        kernel,
+        sasl,
+        stdlib
+        % External dependencies
+    ]},
+
+    {env, [
+        {brokers, []},
+        {regulators, []}
+    ]}
+]}.
