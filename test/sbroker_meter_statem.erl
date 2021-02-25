@@ -122,6 +122,7 @@ time(Time) ->
            ?LET(Incr, choose(5, 5),
                 Time + erlang:convert_time_unit(Incr, milli_seconds, native))]).
 
+-dialyzer({nowarn_function, init_or_change/6}).
 init_or_change(undefined, undefined, _, Mod, Args, Time) ->
     {State, Timeout} = Mod:init(Time, update_args(Mod, Args)),
     {ok, State, Timeout};

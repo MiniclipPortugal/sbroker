@@ -451,7 +451,7 @@ meters_change_config(Time, [{Mod, Args, State} | Changes], Meters, Next) ->
             NNext = min(ModNext, Next),
             meters_change_config(Time, Changes, NMeters, NNext);
         Other ->
-            Reason = {bad_return_Value, Other},
+            Reason = {bad_return_value, Other},
             Callbacks = meters_callbacks(Meters),
             NChanges = meters_change_callbacks(Changes),
             NChanges2 = [{sbroker_meter, Mod, Reason, State} | NChanges],

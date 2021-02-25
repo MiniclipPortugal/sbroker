@@ -176,6 +176,7 @@ relative_time() ->
                {4, choose(-Max, 0)},
                {1, choose(0, Max)}]).
 
+-dialyzer({nowarn_function, init_or_change/7}).
 init_or_change(undefined, undefined, undefined, _, Mod, Args, Time) ->
     {Status, State, Timeout} = Mod:init(#{}, Time, Args),
     {ok, Status, State, Timeout};
@@ -696,6 +697,7 @@ continue_maybe_ask(#state{time=Time, list=L, done=Done, manager=Manager,
                         timeout=Timeout}
     end.
 
+-dialyzer({nowarn_function, spawn_client/0}).
 spawn_client() ->
     Parent = self(),
     spawn_monitor(fun() -> client_init(Parent) end).

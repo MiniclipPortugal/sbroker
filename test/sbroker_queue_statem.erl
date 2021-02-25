@@ -172,6 +172,7 @@ time(Time) ->
 tag() ->
     elements([a, b, c]).
 
+-dialyzer({nowarn_function, init_or_change/6}).
 init_or_change(undefined, undefined, _, Mod, Args, Time) ->
     {State, Timeout} = Mod:init(queue:new(), Time, Args),
     {ok, State, Timeout};
