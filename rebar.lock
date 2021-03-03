@@ -1,8 +1,1 @@
-{"1.2.0",
-[{<<"stacktrace_compat">>,{pkg,<<"stacktrace_compat">>,<<"1.2.1">>},0}]}.
-[
-{pkg_hash,[
- {<<"stacktrace_compat">>, <<"EC6B8EA09B68DE061911AD50037E10673C823F4BC15B544DE657949DFB99961B">>}]},
-{pkg_hash_ext,[
- {<<"stacktrace_compat">>, <<"416BEC0A4579C02976B8223AD4EDEA93A1C2E0E80B19977675542B0CAFEDBB99">>}]}
-].
+[].

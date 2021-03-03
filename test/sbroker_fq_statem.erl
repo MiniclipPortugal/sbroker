@@ -502,9 +502,6 @@ out(#state{timeout_time=Timeout, time=Time, robin=Robin}  = State) ->
 
 out_loop([], [], #state{timeout_time=infinity} = State) ->
     {empty, [], State#state{robin=[]}};
-out_loop([], Acc, #state{timeout_time=infinity} = State) ->
-    [FirstEmpty | Robin] = lists:reverse(Acc),
-    {empty, [], State#state{robin=Robin++[FirstEmpty]}};
 out_loop([Key | Rest], Acc,
          #state{time=Time, drops=Drops, empty=Empty, dict=D,
                 timeout_time=Timeout} = State) ->

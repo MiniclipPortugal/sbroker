@@ -60,7 +60,7 @@ handle_info(Msg, Time, State) ->
     sbroker_fq_queue:handle_info(Msg, Time, State).
 
 code_change(OldVsn, Time, State, Extra) ->
-    sbroker_fq_queue:codeg_change(OldVsn, Time, State, Extra).
+    sbroker_fq_queue:code_change(OldVsn, Time, State, Extra).
 
 config_change(Args, Time, State) ->
     sbroker_fq_queue:config_change(Args, Time, State).

@@ -1,11 +1,7 @@
-sbroker
-=======
+# sbroker [![GitHub Actions CI][ci-img]][ci]
 
-![build](https://github.com/miniclip/sbroker/workflows/build/badge.svg)
-[![erlang][erlang badge]][erlang downloads]
-
-[erlang badge]: https://img.shields.io/badge/erlang-%3E%3D19.3-lightgrey
-[erlang downloads]: http://www.erlang.org/download
+[ci]: https://github.com/miniclip/sbroker
+[ci-img]: https://github.com/miniclip/sbroker/workflows/build/badge.svg
 
 `sbroker` is a library that provides the building blocks for creating a pool
 and/or a load regulator. The main goals of the library are to minimise upper
@@ -13,8 +9,7 @@ percentile latency by smart queuing, easily change the feature set live with
 minimal changes, easily inspect a live system and provide confidence with
 property based testing.
 
-Example
--------
+## Example
 
 Add a broker to the `sbroker` application env `brokers` and it will be started
 when the application starts. Below we use a CoDel queue for the `ask` side, a
@@ -39,8 +34,7 @@ Matches can also be requested without queuing, asynchronously or using a dynamic
 approach that is synchronous but becomes asynchronous if a match isn't
 immediately available.
 
-Requirements
-------------
+## Requirements
 
 The minimum OTP version supported is 18.0.
 
@@ -48,8 +42,7 @@ The `sasl` application is required to start the `sbroker` application. The
 `sasl` `error_logger` handler can be disabled by setting the `sasl` application
 env `sasl_error_logger` to `false`.
 
-Installing
-----------
+## Installing
 
 For rebar3 add `sbroker` as a depencency in `rebar.config`:
 
@@ -60,21 +53,18 @@ For rebar3 add `sbroker` as a depencency in `rebar.config`:
 Other build tools may work if they support `rebar3` dependencies but are not
 directly supported.
 
-Testing
--------
+## Testing
 
 ```bash
 $ rebar3 ct
 ...
 ```
 
-Documentation
--------------
+## Documentation
 
 Documentation is hosted on hex: [http://hexdocs.pm/sbroker/](http://hexdocs.pm/sbroker/).
 
-Motivation
-----------
+## Motivation
 
 The main roles of a pool are: dispatching, back pressure, load shedding,
 worker supervision and resizing.
@@ -148,8 +138,7 @@ configuration so the user can decide exactly how to handle failures. Fortunately
 using both the broker and regulator patterns allows workers to be started under
 user defined supervisors.
 
-License
--------
+## License
 
 Copyright 2014 James Fish
 
@@ -165,8 +154,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-Roadmap
--------
+## Roadmap
 
 * 1.1 - Add circuit breaker sregulator valves
 * 1.2+ - Add improved queue management algorithms when possible, if at all
