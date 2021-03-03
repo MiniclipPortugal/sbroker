@@ -696,8 +696,7 @@ init_it(Starter, Parent, Name, Mod, Args, Opts) ->
             Reason = {bad_return_value, Other},
             init_stop(Starter, Name, Reason)
     catch
-        Class:Reason ->
-            Stack = erlang:get_stacktrace(),
+        Class:Reason:Stack ->
             Reason2 = sbroker_handlers:exit_reason({Class, Reason, Stack}),
             init_stop(Starter, Name, Reason2)
     end.
@@ -866,8 +865,8 @@ update_meter(Now, asking, #time{send=Send, empty=Empty} = Time, Asks, Bids,
         Other ->
             asking_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            asking_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            asking_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 update_meter(Now, bidding, #time{send=Send, empty=Empty} = Time, Asks, Bids,
              #config{bid_mod=BidMod} = Config) ->
@@ -882,8 +881,8 @@ update_meter(Now, bidding, #time{send=Send, empty=Empty} = Time, Asks, Bids,
         Other ->
             bidding_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            bidding_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            bidding_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end.
 
 update_meter(Now, RelativeTime, Empty,
@@ -950,8 +949,8 @@ asking_timeout(#time{now=Now} = Time, Asks, Bids,
         Other ->
             asking_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            asking_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            asking_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end.
 
 asking(Time, Asks, Bids, Next, Config) ->
@@ -969,8 +968,8 @@ asking({ask, Ask, Value}, #time{now=Now, send=Send} = Time, Asks, Bids, _,
         Other ->
             asking_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            asking_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            asking_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 asking({bid, Bid, BidValue} = Msg, #time{now=Now, send=Send} = Time, Asks, Bids,
        _, #config{ask_mod=AskMod} = Config) ->
@@ -1029,8 +1028,8 @@ asking({cancel, From, Tag}, #time{now=Now} = Time, Asks, Bids, _,
         Other ->
             asking_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            asking_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            asking_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 asking(Msg, Time, Asks, Bids, Next, Config) ->
     common(Msg, asking, Time, Asks, Bids, Next, Config).
@@ -1060,8 +1059,8 @@ common({len_ask, From, _}, State, Time, Asks, Bids, _,
             gen:reply(From, Len),
             timeout(State, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            asking_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            asking_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 common({len_bid, From, _}, State, Time, Asks, Bids, _,
         #config{bid_mod=BidMod} = Config) ->
@@ -1070,8 +1069,8 @@ common({len_bid, From, _}, State, Time, Asks, Bids, _,
             gen:reply(From, Len),
             timeout(State, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            bidding_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            bidding_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 common({_, From, get_modules}, State, #time{meters=Meters} = Time, Asks, Bids,
        _, #config{mod=Mod, ask_mod=AskMod, bid_mod=BidMod} = Config) ->
@@ -1092,8 +1091,8 @@ handle_out(Mod, Now, Queue) ->
         Other ->
             {bad_return_value, Other, Queue}
     catch
-        Class:Reason ->
-            {exception, Class, Reason, Queue, erlang:get_stacktrace()}
+        Class:Reason:Stack ->
+            {exception, Class, Reason, Queue, Stack}
     end.
 
 handle_out(Ref, Result, Mod, Now, Queue) ->
@@ -1116,8 +1115,8 @@ info_asks(Msg, State, #time{now=Now} = Time, Asks, Bids,
         Other ->
             asking_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            asking_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            asking_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end.
 
 info_bids(Msg, State, #time{now=Now} = Time, Asks, AskNext, Bids,
@@ -1128,8 +1127,8 @@ info_bids(Msg, State, #time{now=Now} = Time, Asks, AskNext, Bids,
         Other ->
             bidding_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            bidding_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            bidding_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end.
 
 info_meter(_, State, #time{meters=[]} = Time, Asks, AskNext, Bids, BidNext,
@@ -1167,8 +1166,8 @@ bidding_timeout(#time{now=Now} = Time, Asks, Bids,
         Other ->
             bidding_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            bidding_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            bidding_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end.
 
 bidding(Time, Asks, Bids, Next, Config) ->
@@ -1186,8 +1185,8 @@ bidding({bid, Bid, Value}, #time{now=Now, send=Send} = Time, Asks, Bids, _,
         Other ->
             bidding_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            bidding_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            bidding_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 bidding({ask, Ask, AskValue} = Msg, #time{now=Now, send=Send} = Time, Asks,
         Bids, _, #config{bid_mod=BidMod} = Config) ->
@@ -1246,8 +1245,8 @@ bidding({cancel, From, Tag}, #time{now=Now} = Time, Asks, Bids, _,
         Other ->
             bidding_return(Other, Time, Asks, Bids, Config)
     catch
-        Class:Reason ->
-            bidding_exception(Class, Reason, Time, Asks, Bids, Config, erlang:get_stacktrace())
+        Class:Reason:Stack ->
+            bidding_exception(Class, Reason, Time, Asks, Bids, Config, Stack)
     end;
 bidding(Msg, Time, Asks, Bids, Next, Config) ->
     common(Msg, bidding, Time, Asks, Bids, Next, Config).
@@ -1310,8 +1309,8 @@ config_change(#config{mod=Mod, args=Args}) ->
         Other ->
             {error, {bad_return_value, Other}}
     catch
-        Class:Reason ->
-            {error, {Class, Reason, erlang:get_stacktrace()}}
+        Class:Reason:Stack ->
+            {error, {Class, Reason, Stack}}
     end.
 
 config_meters(AskMod, AskArgs, BidMod, BidArgs, MeterArgs) ->
