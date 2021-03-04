@@ -3,6 +3,9 @@
     {vsn, git},
     {registered, []},
     {mod, {sbroker_app, []}},
+    {pkg_name, mc_sbroker},
+    {licenses, ["Apache License, Version 2.0"]},
+    {links, [{"GitHub", "https://github.com/miniclip/sbroker"}]},
 
     {applications, [
         % OTP dependencies
