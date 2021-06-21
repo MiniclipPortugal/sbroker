@@ -114,6 +114,8 @@
 -export([code_change/6]).
 -export([terminate/3]).
 
+-hank([unused_callbacks, {unnecessary_function_arguments, [code_change/6]}]).
+
 %% types
 
 -callback init(Time :: integer(), Args :: any()) ->

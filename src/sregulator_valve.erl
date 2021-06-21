@@ -182,6 +182,8 @@
 -export([config_change/5]).
 -export([terminate/3]).
 
+-hank([unused_callbacks]).
+
 %% types
 
 -type internal_map() :: #{reference() => pid()}.
